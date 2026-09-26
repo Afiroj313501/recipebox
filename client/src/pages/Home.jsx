@@ -4,7 +4,7 @@ export default function Home() {
   const [status, setStatus] = useState('checking...');
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL;
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
     fetch(`${apiUrl}/api/health`)
       .then((res) => res.json())
