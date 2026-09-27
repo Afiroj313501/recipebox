@@ -3,7 +3,24 @@ import { createRecipeSchema, updateRecipeSchema } from '../validators/recipe.val
 
 // GET /api/recipes — the logged-in user's OWN recipes (private + public, any status)
 export async function getMyRecipes(req, res) {
-  const recipes = await Recipe.find({ owner: req.userId }).sort({ createdAt: -1 });
+  const { q, mealType, tags } = req.query;
+
+  const filter = { owner: req.userId };
+
+  if (mealType) {
+    filter.mealType = mealType;
+  }
+
+  if (tags) {
+    const tagList = tags.split(',').map((t) => t.trim().toLowerCase());
+    filter.tags = { $in: tagList };
+  }
+
+  if (q) {
+    filter.$text = { $search: q };
+  }
+
+  const recipes = await Recipe.find(filter).sort({ createdAt: -1 });
   res.json({ recipes });
 }
 
