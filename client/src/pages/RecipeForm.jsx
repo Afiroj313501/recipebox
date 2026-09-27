@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import IngredientChipsInput from '../components/IngredientChipsInput';
 import { createRecipe, updateRecipe, getRecipeById } from '../api/recipes';
+import { uploadImage } from '../api/upload';
 
 const mealTypes = [
   { value: 'breakfast', label: 'Breakfast', emoji: '🌅' },
@@ -33,6 +34,9 @@ export default function RecipeForm() {
   const queryClient = useQueryClient();
 
   const [form, setForm] = useState(emptyForm);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(existingRecipe?.imageUrl || '');
+  const [uploading, setUploading] = useState(false);
 
   // Load existing recipe data when editing
   const { data: existingRecipe } = useQuery({
@@ -55,6 +59,7 @@ export default function RecipeForm() {
         steps: existingRecipe.steps.length ? existingRecipe.steps : [''],
         visibility: existingRecipe.visibility,
       });
+      setImagePreview(existingRecipe.imageUrl || '');
     }
   }, [existingRecipe]);
 
@@ -85,7 +90,14 @@ export default function RecipeForm() {
     setForm({ ...form, steps: form.steps.filter((_, i) => i !== index) });
   }
 
-  function handleSubmit(e) {
+  function handleImageChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
     if (form.ingredients.length === 0) {
@@ -98,8 +110,23 @@ export default function RecipeForm() {
       return;
     }
 
+    let imageUrl = existingRecipe?.imageUrl || '';
+
+    if (imageFile) {
+      setUploading(true);
+      try {
+        imageUrl = await uploadImage(imageFile);
+      } catch (err) {
+        toast.error('Image upload failed');
+        setUploading(false);
+        return;
+      }
+      setUploading(false);
+    }
+
     mutation.mutate({
       ...form,
+      imageUrl,
       steps: cleanSteps,
       servings: Number(form.servings),
       prepMinutes: Number(form.prepMinutes),
@@ -127,6 +154,24 @@ export default function RecipeForm() {
             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#E63946]"
             placeholder="Grandma's Tomato Pasta"
             required
+          />
+        </div>
+
+        {/* Image */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Photo</label>
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="w-full h-40 object-cover rounded-xl mb-2"
+            />
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="text-sm"
           />
         </div>
 
@@ -278,8 +323,8 @@ export default function RecipeForm() {
           )}
         </div>
 
-        <Button type="submit" disabled={mutation.isPending} className="w-full">
-          {mutation.isPending ? 'Saving...' : isEditing ? 'Save changes' : 'Create recipe'}
+        <Button type="submit" disabled={mutation.isPending || uploading} className="w-full">
+          {uploading ? 'Uploading image...' : mutation.isPending ? 'Saving...' : isEditing ? 'Save changes' : 'Create recipe'}
         </Button>
       </form>
     </div>

@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import healthRoute from './routes/health.route.js';
 import authRoute from './routes/auth.route.js';
 import recipeRoute from './routes/recipe.route.js';
+import uploadRoute from './routes/upload.route.js';
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(morgan('dev'));
 app.use('/api/health', healthRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/recipes', recipeRoute);
+app.use('/api/upload', uploadRoute);
 
 app.get('/', (req, res) => {
   res.send('Recipe Box API is running 🍳');
