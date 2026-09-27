@@ -34,9 +34,6 @@ export default function RecipeForm() {
   const queryClient = useQueryClient();
 
   const [form, setForm] = useState(emptyForm);
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(existingRecipe?.imageUrl || '');
-  const [uploading, setUploading] = useState(false);
 
   // Load existing recipe data when editing
   const { data: existingRecipe } = useQuery({
@@ -44,6 +41,10 @@ export default function RecipeForm() {
     queryFn: () => getRecipeById(id),
     enabled: isEditing,
   });
+
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (existingRecipe) {

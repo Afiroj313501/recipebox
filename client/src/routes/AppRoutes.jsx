@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home';
 import RecipeBox from '../pages/RecipeBox';
 import RecipeForm from '../pages/RecipeForm';
+import RecipeDetail from '../pages/RecipeDetail';
 import Suggest from '../pages/Suggest';
 
 export default function AppRoutes() {
@@ -11,6 +12,7 @@ export default function AppRoutes() {
       <Route path="/recipes" element={<RecipeBox />} />
       <Route path="/recipes/new" element={<RecipeForm />} />
       <Route path="/recipes/:id/edit" element={<RecipeForm />} />
+      <Route path="/recipes/:id" element={<RecipeDetail />} />
       <Route path="/suggest" element={<Suggest />} />
     </Routes>
   );
