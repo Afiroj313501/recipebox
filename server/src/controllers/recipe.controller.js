@@ -68,8 +68,20 @@ export async function updateRecipe(req, res) {
     return res.status(403).json({ error: 'Not authorized to edit this recipe' });
   }
 
+  // Was this recipe already reviewed (approved or rejected) while public?
+  const wasReviewed =
+    recipe.visibility === 'public' &&
+    ['approved', 'rejected'].includes(recipe.status);
+
   Object.assign(recipe, parsed.data);
-  await recipe.save(); // triggers the visibility/status pre-save hook
+
+  // Any edit to a reviewed public recipe sends it back to the queue.
+  // If the owner just switched it to private, the model's pre-save hook handles that instead.
+  if (wasReviewed && recipe.visibility === 'public') {
+    recipe.status = 'pending';
+  }
+
+  await recipe.save();
   res.json({ recipe });
 }
 

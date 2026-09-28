@@ -70,7 +70,12 @@ export default function RecipeForm() {
       isEditing ? updateRecipe(id, payload) : createRecipe(payload),
     onSuccess: (recipe) => {
       queryClient.invalidateQueries({ queryKey: ['my-recipes'] });
-      toast.success(isEditing ? 'Recipe updated!' : 'Recipe created!');
+      queryClient.invalidateQueries({ queryKey: ['recipe', id] });
+      if (isEditing && recipe.visibility === 'public' && recipe.status === 'pending') {
+        toast.success('Updated. It will be reviewed again before going public.');
+      } else {
+        toast.success(isEditing ? 'Recipe updated!' : 'Recipe created!');
+      }
       navigate(`/recipes/${recipe._id}`);
     },
     onError: (error) => {
