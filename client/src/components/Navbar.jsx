@@ -29,6 +29,11 @@ export default function Navbar() {
           <Link to="/suggest" className="text-sm text-gray-700 hover:text-[#E63946]">
             Suggest
           </Link>
+          {user.role === 'admin' && (
+            <Link to="/admin" className="text-sm text-gray-700 hover:text-[#E63946]">
+              Admin
+            </Link>
+          )}
         </>
       )}
 
