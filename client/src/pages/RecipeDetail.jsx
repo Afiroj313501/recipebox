@@ -54,7 +54,7 @@ export default function RecipeDetail() {
     );
   }
 
-  const isOwner = currentUser?._id === recipe.owner;
+  const isOwner = currentUser?._id === recipe.owner?._id;
 
   return (
     <div className="min-h-screen bg-[#FFF8F0] py-10 px-4">
@@ -70,6 +70,9 @@ export default function RecipeDetail() {
           </div>
 
           <h1 className="text-3xl font-bold text-[#1D1D1D] mb-2">{recipe.title}</h1>
+          {recipe.owner?.name && (
+            <p className="text-sm text-gray-500 mb-2">by {recipe.owner.name}</p>
+          )}
           {recipe.description && (
             <p className="text-gray-600 mb-4">{recipe.description}</p>
           )}

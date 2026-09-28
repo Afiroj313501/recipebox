@@ -25,6 +25,9 @@ export default function RecipeCard({ recipe }) {
         <p className="text-sm text-gray-500 capitalize">
           {recipe.mealType} · {recipe.ingredients.length} ingredients
         </p>
+        {recipe.owner?.name && (
+          <p className="text-xs text-gray-400 mt-0.5">by {recipe.owner.name}</p>
+        )}
         {recipe.visibility === 'public' && (
           <span
             className={`inline-block mt-2 text-xs px-2 py-0.5 rounded-full ${

@@ -24,15 +24,30 @@ export async function getMyRecipes(req, res) {
   res.json({ recipes });
 }
 
-// GET /api/recipes/:id — must be the owner (private recipe details aren't public)
+// GET /api/recipes/public: approved public recipes from everyone
+export async function getPublicRecipes(req, res) {
+  const { q, mealType } = req.query;
+
+  const filter = { visibility: 'public', status: 'approved' };
+  if (mealType) filter.mealType = mealType;
+  if (q) filter.$text = { $search: q };
+
+  const recipes = await Recipe.find(filter)
+    .populate('owner', 'name avatarUrl')
+    .sort({ createdAt: -1 });
+
+  res.json({ recipes });
+}
+
+// GET /api/recipes/:id
 export async function getRecipeById(req, res) {
-  const recipe = await Recipe.findById(req.params.id);
+  const recipe = await Recipe.findById(req.params.id).populate('owner', 'name avatarUrl');
 
   if (!recipe) {
     return res.status(404).json({ error: 'Recipe not found' });
   }
 
-  const isOwner = recipe.owner.toString() === req.userId;
+  const isOwner = recipe.owner._id.toString() === req.userId;
   const isPublicApproved = recipe.visibility === 'public' && recipe.status === 'approved';
 
   if (!isOwner && !isPublicApproved) {

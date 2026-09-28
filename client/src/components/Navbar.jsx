@@ -23,6 +23,9 @@ export default function Navbar() {
 
       {user && (
         <>
+          <Link to="/explore" className="text-sm text-gray-700 hover:text-[#E63946]">
+            Explore
+          </Link>
           <Link to="/recipes" className="text-sm text-gray-700 hover:text-[#E63946]">
             Recipe Box
           </Link>

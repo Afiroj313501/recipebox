@@ -5,6 +5,11 @@ export async function getMyRecipes(params = {}) {
   return data.recipes;
 }
 
+export async function getPublicRecipes(params = {}) {
+  const { data } = await api.get('/api/recipes/public', { params });
+  return data.recipes;
+}
+
 export async function getRecipeById(id) {
   const { data } = await api.get(`/api/recipes/${id}`);
   return data.recipe;

@@ -2,10 +2,13 @@ import Recipe from '../models/Recipe.js';
 
 // GET /api/admin/recipes/pending
 export async function getPendingRecipes(req, res) {
+  console.log('🔎 pending queue requested by user', req.userId);
+
   const recipes = await Recipe.find({ visibility: 'public', status: 'pending' })
     .populate('owner', 'name avatarUrl')
-    .sort({ createdAt: 1 }); // oldest first, so nothing sits in the queue forever
+    .sort({ createdAt: 1 });
 
+  console.log('🔎 pending recipes found:', recipes.length);
   res.json({ recipes });
 }
 
