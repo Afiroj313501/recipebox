@@ -22,4 +22,13 @@ app.get('/', (req, res) => {
   res.send('Recipe Box API is running 🍳');
 });
 
+// Global error handler — MUST be last, after all routes
+app.use((err, req, res, next) => {
+  console.error('❌ Error:', err.message);
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    error: err.message || 'Something went wrong on the server',
+  });
+});
+
 export default app;

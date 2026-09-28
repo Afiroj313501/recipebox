@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { ImagePlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import IngredientChipsInput from '../components/IngredientChipsInput';
 import { createRecipe, updateRecipe, getRecipeById } from '../api/recipes';
@@ -161,18 +162,25 @@ export default function RecipeForm() {
         {/* Image */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Photo</label>
-          {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-full h-40 object-cover rounded-xl mb-2"
-            />
-          )}
+          <label
+            htmlFor="recipe-image"
+            className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-300 rounded-xl h-40 cursor-pointer hover:border-[#E63946] transition-colors overflow-hidden"
+          >
+            {imagePreview ? (
+              <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+            ) : (
+              <>
+                <ImagePlus className="text-gray-400" size={28} />
+                <span className="text-sm text-gray-400">Click to upload a photo</span>
+              </>
+            )}
+          </label>
           <input
+            id="recipe-image"
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="text-sm"
+            className="hidden"
           />
         </div>
 
