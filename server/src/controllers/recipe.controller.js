@@ -1,4 +1,5 @@
 import Recipe from '../models/Recipe.js';
+import Rating from '../models/Rating.js';
 import { createRecipeSchema, updateRecipeSchema } from '../validators/recipe.validator.js';
 
 // GET /api/recipes — the logged-in user's OWN recipes (private + public, any status)
@@ -54,7 +55,11 @@ export async function getRecipeById(req, res) {
     return res.status(403).json({ error: 'Not authorized to view this recipe' });
   }
 
-  res.json({ recipe });
+  const myRatingDoc = await Rating.findOne({ recipe: recipe._id, user: req.userId });
+
+  res.json({
+    recipe: { ...recipe.toObject(), myRating: myRatingDoc?.value ?? null },
+  });
 }
 
 // POST /api/recipes

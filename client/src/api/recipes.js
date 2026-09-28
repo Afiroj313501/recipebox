@@ -29,3 +29,8 @@ export async function deleteRecipe(id) {
   const { data } = await api.delete(`/api/recipes/${id}`);
   return data;
 }
+
+export async function rateRecipe(id, value) {
+  const { data } = await api.post(`/api/recipes/${id}/rate`, { value });
+  return data;
+}

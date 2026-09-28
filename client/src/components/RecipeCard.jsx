@@ -28,6 +28,11 @@ export default function RecipeCard({ recipe }) {
         {recipe.owner?.name && (
           <p className="text-xs text-gray-400 mt-0.5">by {recipe.owner.name}</p>
         )}
+        {recipe.ratingsCount > 0 && (
+          <p className="text-xs text-[#b5651d] mt-1">
+            ★ {recipe.rating.toFixed(1)} ({recipe.ratingsCount})
+          </p>
+        )}
         {recipe.visibility === 'public' && (
           <span
             className={`inline-block mt-2 text-xs px-2 py-0.5 rounded-full ${

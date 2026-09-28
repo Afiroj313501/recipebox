@@ -2,7 +2,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
-import { getRecipeById, deleteRecipe } from '../api/recipes';
+import StarRating from '../components/StarRating';
+import { getRecipeById, deleteRecipe, rateRecipe } from '../api/recipes';
 import { useAuthStore } from '../store/authStore';
 
 const mealTypeEmoji = {
@@ -35,6 +36,18 @@ export default function RecipeDetail() {
     },
   });
 
+  const rateMutation = useMutation({
+    mutationFn: (value) => rateRecipe(id, value),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recipe', id] });
+      queryClient.invalidateQueries({ queryKey: ['public-recipes'] });
+      toast.success('Thanks for rating!');
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.error || 'Could not save your rating');
+    },
+  });
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0]">
@@ -55,6 +68,8 @@ export default function RecipeDetail() {
   }
 
   const isOwner = currentUser?._id === recipe.owner?._id;
+  const isPublicApproved = recipe.visibility === 'public' && recipe.status === 'approved';
+  const canRate = !isOwner && isPublicApproved && Boolean(currentUser);
 
   return (
     <div className="min-h-screen bg-[#FFF8F0] py-10 px-4">
@@ -88,6 +103,31 @@ export default function RecipeDetail() {
               ⏱️ {recipe.prepMinutes + recipe.cookMinutes} min total
             </span>
           </div>
+
+          {isPublicApproved && (
+            <div className="mb-4">
+              <div className="flex items-center gap-2">
+                <StarRating value={Math.round(recipe.rating)} readOnly />
+                <span className="text-sm text-gray-600">
+                  {recipe.ratingsCount > 0
+                    ? `${recipe.rating.toFixed(1)} (${recipe.ratingsCount})`
+                    : 'No ratings yet'}
+                </span>
+              </div>
+
+              {canRate && (
+                <div className="mt-3">
+                  <p className="text-xs text-gray-500 mb-1">
+                    {recipe.myRating ? 'Your rating' : 'Rate this recipe'}
+                  </p>
+                  <StarRating
+                    value={recipe.myRating || 0}
+                    onChange={(v) => rateMutation.mutate(v)}
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
           {isOwner && (
             <div className="flex gap-3">
