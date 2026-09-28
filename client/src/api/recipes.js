@@ -1,7 +1,7 @@
 import api from './axios';
 
-export async function getMyRecipes() {
-  const { data } = await api.get('/api/recipes');
+export async function getMyRecipes(params = {}) {
+  const { data } = await api.get('/api/recipes', { params });
   return data.recipes;
 }
 
