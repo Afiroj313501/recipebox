@@ -1,6 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
+import { Button } from '@/components/ui/button';
 import ProgressRing from './ProgressRing';
+import { createRecipe } from '../api/recipes';
 
 const mealTypeEmoji = {
   breakfast: '🌅',
@@ -10,7 +14,36 @@ const mealTypeEmoji = {
 };
 
 export default function SuggestionCard({ result, index }) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const total = result.have.length + result.missing.length;
+
+  const saveMutation = useMutation({
+    mutationFn: () =>
+      createRecipe({
+        title: result.title,
+        mealType: result.mealType,
+        prepMinutes: result.prepMinutes || 0,
+        cookMinutes: result.cookMinutes || 0,
+        servings: 2,
+        ingredients: [
+          ...result.have.map((name) => ({ name: name.toLowerCase(), raw: name })),
+          ...result.missing.map((name) => ({ name: name.toLowerCase(), raw: name })),
+        ],
+        steps: result.steps?.length ? result.steps : ['Steps not provided — edit to add your own.'],
+        tags: result.tags || [],
+        isAISuggestion: true,
+        visibility: 'private',
+      }),
+    onSuccess: (recipe) => {
+      queryClient.invalidateQueries({ queryKey: ['my-recipes'] });
+      toast.success('Saved to your Recipe Box!');
+      navigate(`/recipes/${recipe._id}`);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.error || 'Could not save recipe');
+    },
+  });
 
   return (
     <motion.div
@@ -24,7 +57,7 @@ export default function SuggestionCard({ result, index }) {
           <h3 className="font-semibold text-[#1D1D1D]">{result.title}</h3>
           <p className="text-xs text-gray-500 capitalize">
             {mealTypeEmoji[result.mealType]} {result.mealType}
-            {(result.prepMinutes || result.cookMinutes) &&
+            {(result.prepMinutes || result.cookMinutes) > 0 &&
               ` · ${result.prepMinutes + result.cookMinutes} min`}
           </p>
         </div>
@@ -55,7 +88,13 @@ export default function SuggestionCard({ result, index }) {
           Cook this →
         </Link>
       ) : (
-        <span className="text-xs text-gray-400">AI suggestion — save it to try it</span>
+        <Button
+          size="sm"
+          onClick={() => saveMutation.mutate()}
+          disabled={saveMutation.isPending}
+        >
+          {saveMutation.isPending ? 'Saving...' : '+ Save to Recipe Box'}
+        </Button>
       )}
     </motion.div>
   );

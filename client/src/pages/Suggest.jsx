@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import IngredientChipsInput from '../components/IngredientChipsInput';
 import SuggestionCard from '../components/SuggestionCard';
+import CookingLoader from '../components/CookingLoader';
 import { getSuggestions } from '../api/suggest';
 
 const mealTypes = [
@@ -75,7 +76,9 @@ export default function Suggest() {
           </Button>
         </div>
 
-        {mutation.data && mutation.data.results.length === 0 && (
+        {mutation.isPending && <CookingLoader />}
+
+        {!mutation.isPending && mutation.data && mutation.data.results.length === 0 && (
           <div className="text-center py-16">
             <p className="text-5xl mb-4">🤔</p>
             <p className="text-gray-500">
@@ -84,7 +87,7 @@ export default function Suggest() {
           </div>
         )}
 
-        {mutation.data && mutation.data.results.length > 0 && (
+        {!mutation.isPending && mutation.data && mutation.data.results.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {mutation.data.results.map((result, index) => (
               <SuggestionCard key={result._id || index} result={result} index={index} />
