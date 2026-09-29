@@ -37,6 +37,9 @@ export default function Navbar() {
               Admin
             </Link>
           )}
+          <Link to={`/users/${user._id}`} className="text-sm text-gray-700 hover:text-[#E63946]">
+            My Profile
+          </Link>
         </>
       )}
 

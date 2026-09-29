@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const mealTypeEmoji = {
   breakfast: '🌅',
@@ -8,9 +8,11 @@ const mealTypeEmoji = {
 };
 
 export default function RecipeCard({ recipe }) {
+  const navigate = useNavigate();
+
   return (
-    <Link
-      to={`/recipes/${recipe._id}`}
+    <div
+      onClick={() => navigate(`/recipes/${recipe._id}`)}
       className="block bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-1 overflow-hidden"
     >
       <div className="h-40 bg-gradient-to-br from-[#F4A261] to-[#E63946] flex items-center justify-center text-4xl">
@@ -26,7 +28,13 @@ export default function RecipeCard({ recipe }) {
           {recipe.mealType} · {recipe.ingredients.length} ingredients
         </p>
         {recipe.owner?.name && (
-          <p className="text-xs text-gray-400 mt-0.5">by {recipe.owner.name}</p>
+          <Link
+            to={`/users/${recipe.owner._id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="text-xs text-gray-400 hover:text-[#E63946] mt-0.5 block w-fit"
+          >
+            by {recipe.owner.name}
+          </Link>
         )}
         {recipe.ratingsCount > 0 && (
           <p className="text-xs text-[#b5651d] mt-1">
@@ -47,6 +55,6 @@ export default function RecipeCard({ recipe }) {
           </span>
         )}
       </div>
-    </Link>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import RecipeDetail from '../pages/RecipeDetail';
 import Suggest from '../pages/Suggest';
 import AdminPending from '../pages/AdminPending';
 import Explore from '../pages/Explore';
+import Profile from '../pages/Profile';
 
 export default function AppRoutes() {
   return (
@@ -17,6 +18,7 @@ export default function AppRoutes() {
       <Route path="/recipes/:id" element={<RecipeDetail />} />
       <Route path="/suggest" element={<Suggest />} />
       <Route path="/explore" element={<Explore />} />
+      <Route path="/users/:id" element={<Profile />} />
       <Route path="/admin" element={<AdminPending />} />
       <Route path="/admin/pending" element={<AdminPending />} />
     </Routes>

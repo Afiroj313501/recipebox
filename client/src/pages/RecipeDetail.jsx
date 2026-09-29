@@ -87,7 +87,12 @@ export default function RecipeDetail() {
 
           <h1 className="text-3xl font-bold text-[#1D1D1D] mb-2">{recipe.title}</h1>
           {recipe.owner?.name && (
-            <p className="text-sm text-gray-500 mb-2">by {recipe.owner.name}</p>
+            <Link
+              to={`/users/${recipe.owner._id}`}
+              className="text-sm text-gray-500 hover:text-[#E63946] mb-2 inline-block"
+            >
+              by {recipe.owner.name}
+            </Link>
           )}
           {recipe.description && (
             <p className="text-gray-600 mb-4">{recipe.description}</p>
