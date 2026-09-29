@@ -1,10 +1,18 @@
+import crypto from 'crypto';
 import Recipe from '../models/Recipe.js';
+import SuggestionCache from '../models/SuggestionCache.js';
 import { suggestSchema } from '../validators/suggest.validator.js';
 import { PANTRY_STAPLES } from '../config/pantryStaples.js';
 import { getValidatedGeminiSuggestions } from '../services/gemini.service.js';
 
 function normalize(list) {
   return list.map((s) => s.toLowerCase().trim()).filter(Boolean);
+}
+
+function buildCacheKey(ingredients, mealType, filters) {
+  const sortedIngredients = [...ingredients].map((s) => s.toLowerCase().trim()).sort();
+  const raw = JSON.stringify({ sortedIngredients, mealType, filters: filters || {} });
+  return crypto.createHash('sha256').update(raw).digest('hex');
 }
 
 async function getDbMatches(userIngredients, mealType, filters, userId) {
@@ -90,7 +98,19 @@ export async function suggest(req, res) {
     return res.json({ source: 'db', results: dbResults });
   }
 
-  // Stage 2 — DB was weak, try Gemini
+  // Check cache before calling Gemini
+  const cacheKey = buildCacheKey(parsed.data.ingredients, mealType, filters);
+  const cached = await SuggestionCache.findOne({ key: cacheKey });
+
+  if (cached) {
+    return res.json({
+      source: 'ai',
+      results: [...dbResults, ...formatGeminiResults(cached.payload)],
+      cached: true,
+    });
+  }
+
+  // Not cached — call Gemini fresh
   const geminiResults = await getValidatedGeminiSuggestions(
     parsed.data.ingredients,
     mealType,
@@ -98,6 +118,11 @@ export async function suggest(req, res) {
   );
 
   if (geminiResults) {
+    // Save to cache without blocking the response on this write
+    SuggestionCache.create({ key: cacheKey, payload: geminiResults }).catch((err) =>
+      console.warn('⚠️ Failed to cache suggestion:', err.message)
+    );
+
     return res.json({
       source: 'ai',
       results: [...dbResults, ...formatGeminiResults(geminiResults)],
