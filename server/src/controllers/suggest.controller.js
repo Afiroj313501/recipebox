@@ -1,28 +1,16 @@
 import Recipe from '../models/Recipe.js';
 import { suggestSchema } from '../validators/suggest.validator.js';
 import { PANTRY_STAPLES } from '../config/pantryStaples.js';
+import { getValidatedGeminiSuggestions } from '../services/gemini.service.js';
 
 function normalize(list) {
   return list.map((s) => s.toLowerCase().trim()).filter(Boolean);
 }
 
-// POST /api/suggest
-export async function suggest(req, res) {
-  const parsed = suggestSchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res.status(400).json({ error: parsed.error.issues[0].message });
-  }
-
-  const { mealType, filters } = parsed.data;
-  const userIngredients = new Set(normalize(parsed.data.ingredients));
-
-  // Only match against recipes visible to this user: their own, or approved public ones
+async function getDbMatches(userIngredients, mealType, filters, userId) {
   const query = {
     mealType,
-    $or: [
-      { owner: req.userId },
-      { visibility: 'public', status: 'approved' },
-    ],
+    $or: [{ owner: userId }, { visibility: 'public', status: 'approved' }],
   };
 
   if (filters?.maxTime) {
@@ -56,7 +44,7 @@ export async function suggest(req, res) {
     .sort((a, b) => b.score - a.score)
     .slice(0, 5);
 
-  const results = scored.map(({ recipe, have, missing, score }) => ({
+  return scored.map(({ recipe, have, missing, score }) => ({
     _id: recipe._id,
     title: recipe.title,
     imageUrl: recipe.imageUrl,
@@ -68,7 +56,54 @@ export async function suggest(req, res) {
     score: Math.round(score * 100) / 100,
     isDbRecipe: true,
   }));
+}
 
-  // Stage 2 (Gemini) plugs in here later when results.length < 3 — Phase 5
-  res.json({ source: 'db', results });
+function formatGeminiResults(geminiResults) {
+  return geminiResults.map((result) => ({
+    title: result.title,
+    mealType: result.mealType,
+    prepMinutes: 0,
+    cookMinutes: result.timeMinutes,
+    have: result.uses,
+    missing: result.missing,
+    steps: result.steps,
+    tags: result.tags,
+    score: null,
+    isDbRecipe: false,
+  }));
+}
+
+// POST /api/suggest
+export async function suggest(req, res) {
+  const parsed = suggestSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0].message });
+  }
+
+  const { mealType, filters } = parsed.data;
+  const userIngredients = new Set(normalize(parsed.data.ingredients));
+
+  const dbResults = await getDbMatches(userIngredients, mealType, filters, req.userId);
+
+  // Stage 1 succeeded well enough — return DB results, skip Gemini entirely (free, fast)
+  if (dbResults.length >= 3) {
+    return res.json({ source: 'db', results: dbResults });
+  }
+
+  // Stage 2 — DB was weak, try Gemini
+  const geminiResults = await getValidatedGeminiSuggestions(
+    parsed.data.ingredients,
+    mealType,
+    filters
+  );
+
+  if (geminiResults) {
+    return res.json({
+      source: 'ai',
+      results: [...dbResults, ...formatGeminiResults(geminiResults)],
+    });
+  }
+
+  // Gemini failed or timed out — degrade gracefully to whatever DB found, even if < 3
+  return res.json({ source: 'db', results: dbResults });
 }

@@ -1,5 +1,6 @@
 import ai from '../config/gemini.js';
 import { PANTRY_STAPLES } from '../config/pantryStaples.js';
+import { geminiResponseSchema } from '../validators/geminiSuggestion.validator.js';
 
 function sanitize(text) {
   // Strip anything that could break out of the prompt's intent
@@ -54,5 +55,22 @@ export async function callGemini(ingredients, mealType, filters) {
   } catch (err) {
     clearTimeout(timeout);
     throw err;
+  }
+}
+
+export async function getValidatedGeminiSuggestions(ingredients, mealType, filters) {
+  try {
+    const raw = await callGemini(ingredients, mealType, filters);
+    const parsed = geminiResponseSchema.safeParse(raw);
+
+    if (!parsed.success) {
+      console.warn('⚠️ Gemini response failed validation:', parsed.error.issues[0]?.message);
+      return null;
+    }
+
+    return parsed.data;
+  } catch (err) {
+    console.warn('⚠️ Gemini call failed or timed out:', err.message);
+    return null;
   }
 }
