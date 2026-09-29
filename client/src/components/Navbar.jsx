@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import AuthModal from './AuthModal';
 import { useAuthStore } from '../store/authStore';
@@ -7,6 +7,7 @@ import { useAuthStore } from '../store/authStore';
 export default function Navbar() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState('login');
+  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
 
@@ -47,7 +48,14 @@ export default function Navbar() {
         {user ? (
           <>
             <span className="text-sm text-gray-600">Hi, {user.name}</span>
-            <Button variant="outline" size="sm" onClick={logout}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                logout();
+                navigate('/');
+              }}
+            >
               Log out
             </Button>
           </>
