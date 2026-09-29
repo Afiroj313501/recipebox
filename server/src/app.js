@@ -7,6 +7,7 @@ import authRoute from './routes/auth.route.js';
 import recipeRoute from './routes/recipe.route.js';
 import uploadRoute from './routes/upload.route.js';
 import adminRoute from './routes/admin.route.js';
+import commentRoute from './routes/comment.route.js';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/recipes', recipeRoute);
 app.use('/api/upload', uploadRoute);
 app.use('/api/admin', adminRoute);
+app.use('/api/comments', commentRoute);
 
 app.get('/', (req, res) => {
   res.send('Recipe Box API is running 🍳');

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { protect } from '../middleware/auth.middleware.js';
 import { rateRecipe } from '../controllers/rating.controller.js';
+import { getComments, createComment } from '../controllers/comment.controller.js';
 import {
   getMyRecipes,
   getPublicRecipes,
@@ -18,6 +19,8 @@ router.get('/', getMyRecipes);
 router.get('/public', getPublicRecipes);
 router.post('/', createRecipe);
 router.post('/:id/rate', rateRecipe);
+router.get('/:id/comments', getComments);
+router.post('/:id/comments', createComment);
 router.get('/:id', getRecipeById);
 router.patch('/:id', updateRecipe);
 router.delete('/:id', deleteRecipe);

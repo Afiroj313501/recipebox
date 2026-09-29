@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import StarRating from '../components/StarRating';
+import CommentsSection from '../components/CommentsSection';
 import { getRecipeById, deleteRecipe, rateRecipe } from '../api/recipes';
 import { useAuthStore } from '../store/authStore';
 
@@ -176,6 +177,10 @@ export default function RecipeDetail() {
             ))}
           </ol>
         </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto mt-8">
+        <CommentsSection recipeId={recipe._id} />
       </div>
     </div>
   );
