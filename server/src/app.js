@@ -10,6 +10,7 @@ import adminRoute from './routes/admin.route.js';
 import commentRoute from './routes/comment.route.js';
 import userRoute from './routes/user.route.js';
 import suggestRoute from './routes/suggest.route.js';
+import shoppingListRoute from './routes/shoppingList.route.js';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/api/admin', adminRoute);
 app.use('/api/comments', commentRoute);
 app.use('/api/users', userRoute);
 app.use('/api/suggest', suggestRoute);
+app.use('/api/shopping-list', shoppingListRoute);
 
 app.get('/', (req, res) => {
   res.send('Recipe Box API is running 🍳');
