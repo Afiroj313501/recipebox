@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import AppRoutes from './routes/AppRoutes';
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
+import BottomTabBar from './components/BottomTabBar';
 import { getMe } from './api/auth';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <AppRoutes />
+      <BottomTabBar />
     </BrowserRouter>
   );
 }

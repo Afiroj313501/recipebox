@@ -16,12 +16,7 @@ function mergeItems(existingItems, newItems) {
 
   for (const item of existingItems) {
     const key = `${item.name.toLowerCase().trim()}|${(item.unit || '').toLowerCase().trim()}`;
-    map.set(key, {
-      name: item.name,
-      unit: item.unit,
-      qty: item.qty,
-      checked: item.checked,
-    });
+    map.set(key, { name: item.name, unit: item.unit, qty: item.qty, checked: item.checked });
   }
 
   for (const item of newItems) {
@@ -32,26 +27,23 @@ function mergeItems(existingItems, newItems) {
     if (map.has(key)) {
       map.get(key).qty += item.qty || 0;
     } else {
-      map.set(key, {
-        name: item.name,
-        unit: item.unit,
-        qty: item.qty || 0,
-        checked: false,
-      });
+      map.set(key, { name: item.name, unit: item.unit, qty: item.qty || 0, checked: false });
     }
   }
 
   return Array.from(map.values());
 }
 
-const fromRecipesSchema = z.object({
-  recipeIds: z.array(z.string()).min(1, 'Select at least one recipe'),
-});
-
+// GET /api/shopping-list
 export async function getShoppingList(req, res) {
   const list = await getOrCreateList(req.userId);
   res.json({ shoppingList: list });
 }
+
+// POST /api/shopping-list/from-recipes
+const fromRecipesSchema = z.object({
+  recipeIds: z.array(z.string()).min(1, 'Select at least one recipe'),
+});
 
 export async function addFromRecipes(req, res) {
   const parsed = fromRecipesSchema.safeParse(req.body);
@@ -69,11 +61,11 @@ export async function addFromRecipes(req, res) {
     return res.status(404).json({ error: 'No accessible recipes found' });
   }
 
-  const newItems = recipes.flatMap((recipe) =>
-    recipe.ingredients.map((ingredient) => ({
-      name: ingredient.raw || ingredient.name,
-      qty: ingredient.qty || 0,
-      unit: ingredient.unit || '',
+  const newItems = recipes.flatMap((r) =>
+    r.ingredients.map((ing) => ({
+      name: ing.raw || ing.name,
+      qty: ing.qty || 0,
+      unit: ing.unit || '',
     }))
   );
 
@@ -84,6 +76,7 @@ export async function addFromRecipes(req, res) {
   res.json({ shoppingList: list });
 }
 
+// PATCH /api/shopping-list/:itemId
 const patchItemSchema = z.object({
   checked: z.boolean(),
 });
@@ -110,6 +103,7 @@ export async function updateItem(req, res) {
   res.json({ shoppingList: list });
 }
 
+// DELETE /api/shopping-list/:itemId
 export async function deleteItem(req, res) {
   const list = await ShoppingList.findOne({ owner: req.userId });
   if (!list) {

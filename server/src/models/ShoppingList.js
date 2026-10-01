@@ -7,7 +7,7 @@ const shoppingItemSchema = new mongoose.Schema(
     unit: { type: String, default: '' },
     checked: { type: Boolean, default: false },
   },
-  { _id: true }
+  { _id: true } // each item needs its own id so we can PATCH/DELETE individually
 );
 
 const shoppingListSchema = new mongoose.Schema(
@@ -16,7 +16,7 @@ const shoppingListSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
-      unique: true,
+      unique: true, // one list per user
     },
     items: { type: [shoppingItemSchema], default: [] },
   },
