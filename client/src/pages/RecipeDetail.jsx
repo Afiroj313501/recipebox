@@ -1,10 +1,12 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StarRating from '../components/StarRating';
 import CommentsSection from '../components/CommentsSection';
 import { getRecipeById, deleteRecipe, rateRecipe } from '../api/recipes';
+import { addFromRecipes } from '../api/shoppingList';
 import { useAuthStore } from '../store/authStore';
 
 const mealTypeEmoji = {
@@ -34,6 +36,17 @@ export default function RecipeDetail() {
     },
     onError: (error) => {
       toast.error(error.response?.data?.error || 'Failed to delete recipe');
+    },
+  });
+
+  const addToListMutation = useMutation({
+    mutationFn: () => addFromRecipes([recipe._id]),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shopping-list'] });
+      toast.success('Added to your shopping list!');
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.error || 'Could not add to shopping list');
     },
   });
 
@@ -135,24 +148,38 @@ export default function RecipeDetail() {
             </div>
           )}
 
-          {isOwner && (
-            <div className="flex gap-3">
-              <Button asChild variant="outline">
-                <Link to={`/recipes/${recipe._id}/edit`}>Edit</Link>
-              </Button>
+          <div className="flex flex-col gap-3">
+            {currentUser && (
               <Button
-                variant="destructive"
-                onClick={() => {
-                  if (confirm('Delete this recipe? This can\'t be undone.')) {
-                    deleteMutation.mutate();
-                  }
-                }}
-                disabled={deleteMutation.isPending}
+                variant="outline"
+                onClick={() => addToListMutation.mutate()}
+                disabled={addToListMutation.isPending}
+                className="mb-0"
               >
-                {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+                <ShoppingCart size={16} className="mr-1.5" />
+                {addToListMutation.isPending ? 'Adding...' : 'Add to Shopping List'}
               </Button>
-            </div>
-          )}
+            )}
+
+            {isOwner && (
+              <div className="flex gap-3">
+                <Button asChild variant="outline">
+                  <Link to={`/recipes/${recipe._id}/edit`}>Edit</Link>
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    if (confirm('Delete this recipe? This can\'t be undone.')) {
+                      deleteMutation.mutate();
+                    }
+                  }}
+                  disabled={deleteMutation.isPending}
+                >
+                  {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right column — ingredients + steps */}
