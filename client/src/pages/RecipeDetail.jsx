@@ -64,16 +64,16 @@ export default function RecipeDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0]">
-        <p className="text-gray-500">Loading recipe...</p>
+      <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0] dark:bg-[#121212]">
+        <p className="text-gray-500 dark:text-gray-400">Loading recipe...</p>
       </div>
     );
   }
 
   if (isError || !recipe) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF8F0] gap-3">
-        <p className="text-gray-500">Recipe not found, or you don't have access to it.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFF8F0] dark:bg-[#121212] gap-3">
+        <p className="text-gray-500 dark:text-gray-400">Recipe not found, or you don't have access to it.</p>
         <Button asChild variant="outline">
           <Link to="/recipes">Back to Recipe Box</Link>
         </Button>
@@ -86,7 +86,7 @@ export default function RecipeDetail() {
   const canRate = !isOwner && isPublicApproved && Boolean(currentUser);
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] py-10 px-4">
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#121212] py-10 px-4">
       <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
         {/* Left column — image + meta */}
         <div>
@@ -98,7 +98,7 @@ export default function RecipeDetail() {
             )}
           </div>
 
-          <h1 className="text-3xl font-bold text-[#1D1D1D] mb-2">{recipe.title}</h1>
+          <h1 className="text-3xl font-bold text-[#1D1D1D] dark:text-gray-100 mb-2">{recipe.title}</h1>
           {recipe.owner?.name && (
             <Link
               to={`/users/${recipe.owner._id}`}
@@ -108,17 +108,17 @@ export default function RecipeDetail() {
             </Link>
           )}
           {recipe.description && (
-            <p className="text-gray-600 mb-4">{recipe.description}</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">{recipe.description}</p>
           )}
 
-          <div className="flex flex-wrap gap-2 text-sm text-gray-600 mb-4">
-            <span className="bg-white px-3 py-1 rounded-full shadow-sm capitalize">
+          <div className="flex flex-wrap gap-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <span className="bg-white dark:bg-[#1e1e1e] px-3 py-1 rounded-full shadow-sm capitalize">
               {mealTypeEmoji[recipe.mealType]} {recipe.mealType}
             </span>
-            <span className="bg-white px-3 py-1 rounded-full shadow-sm">
+            <span className="bg-white dark:bg-[#1e1e1e] px-3 py-1 rounded-full shadow-sm">
               🍽️ {recipe.servings} servings
             </span>
-            <span className="bg-white px-3 py-1 rounded-full shadow-sm">
+            <span className="bg-white dark:bg-[#1e1e1e] px-3 py-1 rounded-full shadow-sm">
               ⏱️ {recipe.prepMinutes + recipe.cookMinutes} min total
             </span>
           </div>
@@ -184,12 +184,12 @@ export default function RecipeDetail() {
 
         {/* Right column — ingredients + steps */}
         <div>
-          <h2 className="text-lg font-semibold text-[#1D1D1D] mb-3">Ingredients</h2>
+          <h2 className="text-lg font-semibold text-[#1D1D1D] dark:text-gray-100 mb-3">Ingredients</h2>
           <ul className="space-y-2 mb-6">
             {recipe.ingredients.map((ing, i) => (
               <li
                 key={i}
-                className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg text-sm text-gray-700"
+                className="flex items-center gap-2 bg-white dark:bg-[#1e1e1e] px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-[#2A9D8F]" />
                 {ing.raw || `${ing.qty ?? ''} ${ing.unit ?? ''} ${ing.name}`.trim()}
@@ -197,14 +197,14 @@ export default function RecipeDetail() {
             ))}
           </ul>
 
-          <h2 className="text-lg font-semibold text-[#1D1D1D] mb-3">Steps</h2>
+          <h2 className="text-lg font-semibold text-[#1D1D1D] dark:text-gray-100 mb-3">Steps</h2>
           <ol className="space-y-3">
             {recipe.steps.map((step, i) => (
               <li key={i} className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#E63946] text-white text-xs font-bold flex items-center justify-center">
                   {i + 1}
                 </span>
-                <p className="text-gray-700 text-sm pt-0.5">{step}</p>
+                <p className="text-gray-700 dark:text-gray-300 text-sm pt-0.5">{step}</p>
               </li>
             ))}
           </ol>

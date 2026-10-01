@@ -32,8 +32,8 @@ export default function ShoppingListPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0]">
-        <p className="text-gray-500">Loading your list...</p>
+      <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0] dark:bg-[#121212]">
+        <p className="text-gray-500 dark:text-gray-400">Loading your list...</p>
       </div>
     );
   }
@@ -43,10 +43,10 @@ export default function ShoppingListPage() {
   const checkedCount = items.filter((i) => i.checked).length;
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] p-8">
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#121212] p-8">
       <div className="max-w-xl mx-auto">
         <div className="flex items-center justify-between mb-1">
-          <h1 className="text-2xl font-bold text-[#1D1D1D]">Shopping List</h1>
+          <h1 className="text-2xl font-bold text-[#1D1D1D] dark:text-gray-100">Shopping List</h1>
           {items.length > 0 && (
             <button
               type="button"
@@ -59,7 +59,7 @@ export default function ShoppingListPage() {
         </div>
 
         {items.length > 0 && (
-          <p className="text-sm text-gray-400 mb-6">
+          <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">
             {checkedCount} of {items.length} picked up
           </p>
         )}
@@ -67,8 +67,8 @@ export default function ShoppingListPage() {
         {items.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-5xl mb-4">🛒</p>
-            <p className="text-gray-500 mb-2">Your list is empty.</p>
-            <p className="text-sm text-gray-400">
+            <p className="text-gray-500 dark:text-gray-400 mb-2">Your list is empty.</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">
               Add items from any recipe's detail page.
             </p>
           </div>

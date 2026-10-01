@@ -37,20 +37,20 @@ export default function Suggest() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] p-8">
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#121212] p-8">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-[#1D1D1D] mb-1">What can I cook?</h1>
-        <p className="text-gray-500 mb-6">
+        <h1 className="text-3xl font-bold text-[#1D1D1D] dark:text-gray-100 mb-1">What can I cook?</h1>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">
           Tell me what's in your kitchen, and I'll find recipes that fit.
         </p>
 
-        <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm p-6 mb-8">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Ingredients
           </label>
           <IngredientChipsInput ingredients={ingredients} onChange={setIngredients} />
 
-          <label className="block text-sm font-medium text-gray-700 mt-5 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mt-5 mb-2">
             Meal type
           </label>
           <div className="grid grid-cols-4 gap-3 mb-5">
@@ -62,11 +62,11 @@ export default function Suggest() {
                 className={`flex flex-col items-center justify-center gap-1 rounded-xl border-2 py-3 transition-all ${
                   mealType === meal.value
                     ? 'border-[#E63946] bg-[#E63946]/5 -translate-y-0.5 shadow-md'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                 }`}
               >
                 <span className="text-2xl">{meal.emoji}</span>
-                <span className="text-xs font-medium text-gray-700">{meal.label}</span>
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{meal.label}</span>
               </button>
             ))}
           </div>
@@ -81,7 +81,7 @@ export default function Suggest() {
         {!mutation.isPending && mutation.data && mutation.data.results.length === 0 && (
           <div className="text-center py-16">
             <p className="text-5xl mb-4">🤔</p>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               No close matches yet. Try adding more ingredients, or add more recipes to your box.
             </p>
           </div>

@@ -142,12 +142,12 @@ export default function RecipeForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] py-10 px-4">
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#121212] py-10 px-4">
       <form
         onSubmit={handleSubmit}
-        className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm p-8 space-y-6"
+        className="max-w-2xl mx-auto bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm p-8 space-y-6"
       >
-        <h1 className="text-2xl font-bold text-[#1D1D1D]">
+        <h1 className="text-2xl font-bold text-[#1D1D1D] dark:text-gray-100">
           {isEditing ? 'Edit Recipe' : 'New Recipe'}
         </h1>
 

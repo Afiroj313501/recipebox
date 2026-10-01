@@ -22,9 +22,9 @@ export default function Explore() {
   });
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] p-8">
-      <h1 className="text-2xl font-bold text-[#1D1D1D] mb-1">Explore</h1>
-      <p className="text-gray-500 mb-6">Recipes shared by the community.</p>
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#121212] p-8">
+      <h1 className="text-2xl font-bold text-[#1D1D1D] dark:text-gray-100 mb-1">Explore</h1>
+      <p className="text-gray-500 dark:text-gray-400 mb-6">Recipes shared by the community.</p>
 
       <FilterBar
         q={q}
@@ -33,13 +33,13 @@ export default function Explore() {
         onMealTypeChange={setMealType}
       />
 
-      {isLoading && <p className="text-gray-500">Loading recipes...</p>}
+      {isLoading && <p className="text-gray-500 dark:text-gray-400">Loading recipes...</p>}
       {isError && <p className="text-red-500">Could not load recipes.</p>}
 
       {recipes && recipes.length === 0 && (
         <div className="text-center py-20">
           <p className="text-5xl mb-4">{hasFilters ? '🔍' : '🍽️'}</p>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             {hasFilters
               ? 'No recipes match those filters.'
               : 'No shared recipes yet. Be the first to publish one!'}

@@ -30,12 +30,12 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0] dark:bg-[#121212] px-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8 space-y-4"
+        className="w-full max-w-sm bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-lg p-8 space-y-4"
       >
-        <h1 className="text-2xl font-bold text-[#1D1D1D]">Welcome back</h1>
+        <h1 className="text-2xl font-bold text-[#1D1D1D] dark:text-gray-100">Welcome back</h1>
 
         <input
           type="email"

@@ -33,37 +33,37 @@ export default function AdminPending() {
 
   if (user?.role !== 'admin') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0]">
-        <p className="text-gray-500">Admin access only.</p>
+      <div className="min-h-screen flex items-center justify-center bg-[#FFF8F0] dark:bg-[#121212]">
+        <p className="text-gray-500 dark:text-gray-400">Admin access only.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] p-8">
-      <h1 className="text-2xl font-bold text-[#1D1D1D] mb-6">Pending recipes</h1>
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#121212] p-8">
+      <h1 className="text-2xl font-bold text-[#1D1D1D] dark:text-gray-100 mb-6">Pending recipes</h1>
 
-      {isLoading && <p className="text-gray-500">Loading queue...</p>}
+      {isLoading && <p className="text-gray-500 dark:text-gray-400">Loading queue...</p>}
       {isError && <p className="text-red-500">Could not load the queue.</p>}
 
       {recipes && recipes.length === 0 && (
         <div className="text-center py-20">
           <p className="text-5xl mb-4">✅</p>
-          <p className="text-gray-500">Nothing waiting for review.</p>
+          <p className="text-gray-500 dark:text-gray-400">Nothing waiting for review.</p>
         </div>
       )}
 
       <div className="space-y-4 max-w-3xl">
         {recipes?.map((recipe) => (
-          <div key={recipe._id} className="bg-white rounded-2xl shadow-sm p-5">
+          <div key={recipe._id} className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm p-5">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="font-semibold text-lg text-[#1D1D1D]">{recipe.title}</h2>
-                <p className="text-sm text-gray-500 capitalize">
+                <h2 className="font-semibold text-lg text-[#1D1D1D] dark:text-gray-100">{recipe.title}</h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
                   by {recipe.owner?.name || 'Unknown'} · {recipe.mealType}
                 </p>
                 {recipe.description && (
-                  <p className="text-sm text-gray-600 mt-2">{recipe.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{recipe.description}</p>
                 )}
               </div>
               <div className="flex gap-2 shrink-0">

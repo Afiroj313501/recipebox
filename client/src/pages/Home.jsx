@@ -9,13 +9,13 @@ export default function Home() {
   const user = useAuthStore((s) => s.user);
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] flex flex-col items-center justify-center text-center px-6">
-      <h1 className="text-5xl md:text-6xl font-bold text-[#1D1D1D] mb-4">
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#121212] flex flex-col items-center justify-center text-center px-6">
+      <h1 className="text-5xl md:text-6xl font-bold text-[#1D1D1D] dark:text-gray-100 mb-4">
         Tell me what's in your kitchen.
         <br />
         <span className="text-[#E63946]">I'll tell you what to cook.</span>
       </h1>
-      <p className="text-lg text-gray-600 max-w-xl mb-8">
+      <p className="text-lg text-gray-600 dark:text-gray-400 max-w-xl mb-8">
         Store your recipes, get AI-powered suggestions from what you already
         have, and build a shopping list for the rest — all in one place.
       </p>

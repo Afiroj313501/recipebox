@@ -25,9 +25,9 @@ export default function RecipeBox() {
   });
 
   return (
-    <div className="min-h-screen bg-[#FFF8F0] p-8">
+    <div className="min-h-screen bg-[#FFF8F0] dark:bg-[#121212] p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#1D1D1D]">Your Recipe Box</h1>
+        <h1 className="text-2xl font-bold text-[#1D1D1D] dark:text-gray-100">Your Recipe Box</h1>
         <Button asChild>
           <Link to="/recipes/new">+ Add Recipe</Link>
         </Button>
@@ -40,7 +40,7 @@ export default function RecipeBox() {
         onMealTypeChange={setMealType}
       />
 
-      {isLoading && <p className="text-gray-500">Loading your recipes...</p>}
+      {isLoading && <p className="text-gray-500 dark:text-gray-400">Loading your recipes...</p>}
       {isError && (
         <p className="text-red-500">Something went wrong loading your recipes.</p>
       )}
@@ -48,7 +48,7 @@ export default function RecipeBox() {
       {recipes && recipes.length === 0 && (
         <div className="text-center py-20">
           <p className="text-5xl mb-4">{hasFilters ? '🔍' : '🍳'}</p>
-          <p className="text-gray-500 mb-4">
+          <p className="text-gray-500 dark:text-gray-400 mb-4">
             {hasFilters
               ? 'No recipes match those filters.'
               : 'Nothing here yet — add your first recipe.'}
