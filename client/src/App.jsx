@@ -26,8 +26,16 @@ function App() {
 
   return (
     <BrowserRouter>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:bg-white focus:text-[#E63946] focus:px-4 focus:py-2 focus:rounded-lg focus:z-50"
+      >
+        Skip to content
+      </a>
       <Navbar />
-      <AppRoutes />
+      <main id="main-content">
+        <AppRoutes />
+      </main>
       <BottomTabBar />
     </BrowserRouter>
   );

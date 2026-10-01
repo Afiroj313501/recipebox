@@ -19,7 +19,7 @@ export default function StarRating({ value = 0, onChange, readOnly = false, size
         >
           <Star
             size={size}
-            className={n <= shown ? 'fill-[#F4A261] text-[#F4A261]' : 'text-gray-300'}
+            className={n <= shown ? 'fill-[#F4A261] text-[#b5651d]' : 'text-gray-300'}
           />
         </button>
       ))}
