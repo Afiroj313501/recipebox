@@ -4,7 +4,7 @@ A full-stack MERN kitchen assistant that turns "what's in my fridge" into a real
 
 > "Tell me what's in your kitchen. I'll tell you what to cook."
 
-**Live app:** _add link after deployment_
+**Live app:** https://recipebox-pied.vercel.app
 **API:** _add link after deployment_
 
 ---
