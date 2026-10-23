@@ -123,7 +123,7 @@ export default function RecipeForm() {
       setUploading(true);
       try {
         imageUrl = await uploadImage(imageFile);
-      } catch (err) {
+      } catch {
         toast.error('Image upload failed');
         setUploading(false);
         return;

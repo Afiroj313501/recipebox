@@ -43,6 +43,7 @@ export async function callGemini(ingredients, mealType, filters) {
     const response = await ai.models.generateContent({
       model: 'gemini-3.6',
       contents: prompt,
+      config: { abortSignal: controller.signal },
     });
 
     clearTimeout(timeout);

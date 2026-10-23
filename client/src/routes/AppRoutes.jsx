@@ -8,11 +8,15 @@ import AdminPending from '../pages/AdminPending';
 import Explore from '../pages/Explore';
 import Profile from '../pages/Profile';
 import ShoppingListPage from '../pages/ShoppingList';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
 
 export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/recipes" element={<RecipeBox />} />
       <Route path="/recipes/new" element={<RecipeForm />} />
       <Route path="/recipes/:id/edit" element={<RecipeForm />} />
